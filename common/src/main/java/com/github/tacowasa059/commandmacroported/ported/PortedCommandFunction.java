@@ -13,7 +13,6 @@ import net.minecraft.nbt.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.ServerFunctionManager;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.text.DecimalFormat;
@@ -215,8 +214,8 @@ public class PortedCommandFunction extends net.minecraft.commands.CommandFunctio
             return stringbuilder.toString();
         }
 
-        public void execute(@NotNull ServerFunctionManager p_299564_, @NotNull CommandSourceStack p_298428_,
-                            @NotNull Deque<ServerFunctionManager.QueuedCommand> p_299632_, int p_298690_,
+        public void execute(ServerFunctionManager p_299564_, CommandSourceStack p_298428_,
+                            Deque<ServerFunctionManager.QueuedCommand> p_299632_, int p_298690_,
                             int p_299006_, @Nullable ServerFunctionManager.TraceCallbacks p_297793_) throws CommandSyntaxException {
             throw new IllegalStateException("Tried to execute an uninstantiated macro");
         }
