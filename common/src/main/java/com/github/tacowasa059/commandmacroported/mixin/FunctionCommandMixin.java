@@ -1,25 +1,22 @@
 package com.github.tacowasa059.commandmacroported.mixin;
 
-import com.github.tacowasa059.commandmacroported.accessor.DataCommandsAccessor;
 import com.github.tacowasa059.commandmacroported.accessor.ServerFunctionManagerAccessor;
 import com.github.tacowasa059.commandmacroported.ported.FunctionInstantiationException;
 import com.github.tacowasa059.commandmacroported.ported.FunctionResult;
+import com.github.tacowasa059.commandmacroported.ported.ModSuggestionProviders;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
-import com.mojang.brigadier.suggestion.SuggestionProvider;
 import net.minecraft.commands.CommandFunction;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.CompoundTagArgument;
 import net.minecraft.commands.arguments.NbtPathArgument;
 import net.minecraft.commands.arguments.item.FunctionArgument;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.ServerFunctionManager;
 import net.minecraft.server.commands.FunctionCommand;
 import net.minecraft.server.commands.data.DataAccessor;
 import net.minecraft.server.commands.data.DataCommands;
@@ -54,12 +51,6 @@ public abstract class FunctionCommandMixin {
     private static final DynamicCommandExceptionType ERROR_ARGUMENT_NOT_COMPOUND = new DynamicCommandExceptionType((p_296505_) -> {
         return Component.translatable("commands.function.error.argument_not_compound", p_296505_);
     });
-    @Unique
-    private static final SuggestionProvider<CommandSourceStack> SUGGEST_FUNCTION = (p_137719_, p_137720_) -> {
-        ServerFunctionManager serverfunctionmanager = p_137719_.getSource().getServer().getFunctions();
-        SharedSuggestionProvider.suggestResource(serverfunctionmanager.getTagNames(), p_137720_, "#");
-        return SharedSuggestionProvider.suggestResource(serverfunctionmanager.getFunctionNames(), p_137720_);
-    };
 
     @Unique
     private static void commandmacroported$register(CommandDispatcher<CommandSourceStack> p_137715_) {
@@ -79,7 +70,7 @@ public abstract class FunctionCommandMixin {
 
         p_137715_.register(Commands.literal("function").requires((p_137722_) -> {
             return p_137722_.hasPermission(2);
-        }).then(Commands.argument("name", FunctionArgument.functions()).suggests(SUGGEST_FUNCTION).executes((p_296504_) -> {
+        }).then(Commands.argument("name", FunctionArgument.functions()).suggests(ModSuggestionProviders.SUGGEST_FUNCTION).executes((p_296504_) -> {
             return commandmacroported$runFunction(p_296504_.getSource(), FunctionArgument.getFunctions(p_296504_, "name"), null);
         }).then(Commands.argument("arguments", CompoundTagArgument.compoundTag()).executes((p_296510_) -> {
             return commandmacroported$runFunction(p_296510_.getSource(), FunctionArgument.getFunctions(p_296510_, "name"),
@@ -88,9 +79,8 @@ public abstract class FunctionCommandMixin {
     }
 
     @Unique
-    private static CompoundTag commandmacroported$getArgumentTag(NbtPathArgument.NbtPath p_298274_, DataAccessor p_301396_) throws CommandSyntaxException {
-        DataCommandsAccessor accessor = new DataCommandsMixin();
-        Tag tag = accessor.commandmacroported$getSingleTag(p_298274_, p_301396_);
+    private static CompoundTag commandmacroported$getArgumentTag(NbtPathArgument.NbtPath p_298274_, DataAccessor dataAccessor) throws CommandSyntaxException {
+        Tag tag = DataCommandsMixin.commandmacroported$getSingleTag(p_298274_, dataAccessor);
         if (tag instanceof CompoundTag) {
             return (CompoundTag)tag;
         } else {
@@ -152,5 +142,6 @@ public abstract class FunctionCommandMixin {
         FunctionResult functioncommand$functionresult = mutableobject.getValue();
         return functioncommand$functionresult != null ? functioncommand$functionresult : new FunctionResult(i, false);
     }
+
 
 }

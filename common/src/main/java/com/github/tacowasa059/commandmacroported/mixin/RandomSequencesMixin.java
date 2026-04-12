@@ -7,10 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.RandomSequence;
 import net.minecraft.world.RandomSequences;
 import org.slf4j.Logger;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -54,8 +51,13 @@ public class RandomSequencesMixin implements RandomSequenceAccessor {
         return p_297418_.contains(p_298953_, 1) ? p_297418_.getBoolean(p_298953_) : p_297237_;
     }
 
+    /**
+     * @author
+     * @reason
+     */
     @SuppressWarnings("removal")
-    private static RandomSequences load(long p_287756_, CompoundTag p_287587_) {
+    @Overwrite
+    public static RandomSequences load(long p_287756_, CompoundTag p_287587_) {
         RandomSequences randomsequences = new RandomSequences(p_287756_);
         ((RandomSequenceAccessor)randomsequences).setSeedDefaults(p_287587_.getInt("salt"),
                 getBooleanWithDefault(p_287587_, "include_world_seed", true),

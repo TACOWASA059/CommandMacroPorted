@@ -9,6 +9,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.ServerFunctionManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import javax.annotation.Nullable;
 
@@ -24,5 +27,15 @@ public abstract class ServerFunctionManagerMixin implements ServerFunctionManage
         ServerFunctionManager manager = (ServerFunctionManager) (Object) this;
         CommandFunction commandfunction = ((PortedCommandFunction)precommandFunction).instantiate(p_300204_, manager.getDispatcher(), p_179962_);
         return execute(commandfunction, p_179962_, p_179963_);
+    }
+
+    @Inject(method = "execute(Lnet/minecraft/commands/CommandFunction;Lnet/minecraft/commands/CommandSourceStack;)I", at = @At("HEAD"), cancellable = true)
+    public void commandmacroported$executeinjection(CommandFunction functionObject, CommandSourceStack source, CallbackInfoReturnable<Integer> cir) {
+        try {
+            cir.setReturnValue(this.commandmacroported$execute(functionObject, source, (ServerFunctionManager.TraceCallbacks)null, (CompoundTag)null));
+        } catch (FunctionInstantiationException functioninstantiationexception) {
+            cir.setReturnValue(0);
+        }
+        cir.cancel();
     }
 }
