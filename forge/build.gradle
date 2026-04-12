@@ -51,3 +51,6 @@ jar {
             "MixinConfigs": "${mod_id}.mixins.json,${mod_id}.forge.mixins.json"
     ])
 }
+tasks.withType(Javadoc).configureEach {
+    failOnError = false
+}

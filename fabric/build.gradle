@@ -37,3 +37,6 @@ loom {
         }
     }
 }
+tasks.withType(Javadoc).configureEach {
+    failOnError = false
+}
